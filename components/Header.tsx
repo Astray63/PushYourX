@@ -21,17 +21,19 @@ export function Header() {
         <div className="flex items-center justify-between gap-3 lg:justify-start">
           <Link
             href="/"
-            aria-label="push your.x, home"
-            className="inline-flex shrink-0 items-center"
+            className="group inline-flex shrink-0 items-center gap-2 sm:gap-2.5"
           >
             <Image
               src="/logo-mark-transparent.png"
               alt=""
               width={512}
               height={512}
-              className="size-10 object-contain sm:size-11"
+              className="size-9 object-contain transition-transform duration-200 group-hover:-translate-y-0.5 sm:size-10"
               preload
             />
+            <span className="text-[19px] leading-none font-semibold tracking-[-0.035em] sm:text-[21px]">
+              PushYour<span className="text-primary">X</span>
+            </span>
           </Link>
 
           {/* Actions compactes, mobile uniquement */}
