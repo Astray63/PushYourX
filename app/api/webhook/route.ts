@@ -40,7 +40,7 @@ export async function fulfill(pendingId: string) {
   if (!p || p.settled) return p;
 
   if (p.kind === "takeover") await settleTakeover(p.handle, p.tagline, p.amount);
-  else await settleBid(p.handle, p.display || p.handle, p.tagline, p.amount);
+  else await settleBid(p.handle, p.display || p.handle, p.tagline, p.amount, p.post_url ?? "");
 
   await markSettled(pendingId);
   return getPending(pendingId);

@@ -13,6 +13,9 @@ rien d'autre.
 - Égalité de montant : la mise la plus ancienne passe devant.
 - **Takeover** : une bannière au-dessus de tout le board pendant 3 h, au prix du double du n°1.
 - Chaque ligne pointe vers `x.com/<handle>` avec un compteur de clics.
+- Une mise peut **mettre en avant un post X** : le lien s'affiche sur la ligne, ce qui permet
+  de pousser un lancement ou un produit et pas seulement un profil. Remiser sans redonner de
+  lien conserve le post déjà attaché.
 - Cartes **Latest activity** (dernières mises) et **🔥 Trending right now** (clics de la dernière heure).
 
 ## Design
@@ -68,6 +71,7 @@ seed, pas de fixtures. Le board se remplit uniquement de mises réellement payé
 - `0001_init.sql` — tables `bids`, `pending`, `takeover`, `clicks`, `visits`
 - `0002_functions.sql` — les opérations qui doivent être atomiques (`settle_bid`, `track_click`)
   ou agrégées (`board_stats`, `board_trending`, `rank_for_amount`)
+- `0003_post_url.sql` — le post mis en avant, porté de `pending` jusqu'à `bids`
 
 **RLS est activé sur toutes les tables, sans aucune policy.** Rien n'est joignable depuis le
 navigateur : tout passe par les routes serveur Next.js avec la `service_role` key, qui contourne

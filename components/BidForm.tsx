@@ -13,6 +13,7 @@ type Props = {
 
 export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
   const [handle, setHandle] = useState("");
+  const [post, setPost] = useState("");
   const [amount, setAmount] = useState(nextBid);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -35,7 +36,7 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
       const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ handle, amount, kind: "bid" }),
+        body: JSON.stringify({ handle, post, amount, kind: "bid" }),
       });
       const data = await res.json();
       if (!res.ok) return setError(data.error ?? "Something went wrong.");
@@ -128,6 +129,32 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
           </button>
         </div>
 
+        <div className="relative min-w-0">
+          <span className="absolute top-1/2 left-4 -translate-y-1/2 text-muted-foreground">
+            <svg
+              viewBox="0 0 24 24"
+              className="size-4"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden
+            >
+              <path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7" />
+              <path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7" />
+            </svg>
+          </span>
+          <input
+            value={post}
+            onChange={(e) => setPost(e.target.value)}
+            placeholder="Feature one of your posts (optional)"
+            autoComplete="off"
+            spellCheck={false}
+            className="w-full min-w-0 rounded-full border border-input bg-card py-3 pr-4 pl-11 text-sm transition-colors outline-none placeholder:text-muted-foreground focus:border-primary-ring focus:ring-4 focus:ring-primary/10"
+          />
+        </div>
+
         <p className="text-center text-xs leading-relaxed text-muted-foreground text-pretty">
           {existing ? (
             <>
@@ -137,8 +164,8 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
             </>
           ) : (
             <>
-              Been pushed down? Put the same handle back in with a bigger number and you are back
-              on top.
+              Paste a post link and your row shows it off, so the board sells your launch and not
+              just your handle.
             </>
           )}
         </p>

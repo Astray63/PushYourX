@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { parseHandle, cleanTagline, avatarUrlSafe } from "@/lib/x";
+import { parseHandle, cleanTagline, avatarUrlSafe, parsePostUrl } from "@/lib/x";
 import {
   MIN_BID,
   TAKEOVER_HOURS,
@@ -32,6 +32,15 @@ export async function POST(req: Request) {
   const tagline = cleanTagline(String(body.tagline ?? ""));
   const amount = Math.floor(Number(body.amount));
 
+  // Le post est facultatif : vide passe, mal formé est refusé.
+  const rawPost = String(body.post ?? "").trim();
+  let postUrl = "";
+  if (rawPost) {
+    const post = parsePostUrl(rawPost);
+    if (!post.ok) return NextResponse.json({ error: post.error }, { status: 400 });
+    postUrl = post.url;
+  }
+
   if (!Number.isFinite(amount)) {
     return NextResponse.json({ error: "Enter a whole dollar amount." }, { status: 400 });
   }
@@ -62,12 +71,19 @@ export async function POST(req: Request) {
   }
 
   const charge = kind === "takeover" ? amount : await priceFor(parsed.handle, amount);
-  const pendingId = await createPending(parsed.handle, parsed.display, tagline, amount, kind);
+  const pendingId = await createPending(
+    parsed.handle,
+    parsed.display,
+    tagline,
+    amount,
+    kind,
+    postUrl
+  );
 
   // Mode démo : aucune clé Stripe, la mise est validée immédiatement.
   if (isDemo || !stripe) {
     if (kind === "takeover") await settleTakeover(parsed.handle, tagline, amount);
-    else await settleBid(parsed.handle, parsed.display, tagline, amount);
+    else await settleBid(parsed.handle, parsed.display, tagline, amount, postUrl);
     await markSettled(pendingId);
     return NextResponse.json({ demo: true, url: `/success?p=${pendingId}` });
   }

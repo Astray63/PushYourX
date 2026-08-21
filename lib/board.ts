@@ -10,6 +10,7 @@ type BidRow = {
   handle: string;
   display_handle: string;
   tagline: string;
+  post_url: string;
   amount: number;
   clicks: number;
   created_at: string;
@@ -21,6 +22,7 @@ const toEntry = (r: BidRow, rank: number): Entry => ({
   handle: r.handle,
   display_handle: r.display_handle,
   tagline: r.tagline,
+  post_url: r.post_url ?? "",
   amount: r.amount,
   clicks: r.clicks,
   created_at: ms(r.created_at),
@@ -110,13 +112,15 @@ export async function settleBid(
   handle: string,
   display: string,
   tagline: string,
-  amount: number
+  amount: number,
+  postUrl = ""
 ) {
   const { data, error } = await supabase.rpc("settle_bid", {
     p_handle: handle,
     p_display: display,
     p_tagline: cleanTagline(tagline),
     p_amount: amount,
+    p_post_url: postUrl,
   });
   if (error) throw error;
   return data as BidRow;

@@ -3,6 +3,7 @@ export type Entry = {
   handle: string;
   display_handle: string;
   tagline: string;
+  post_url: string;
   amount: number;
   clicks: number;
   created_at: number;

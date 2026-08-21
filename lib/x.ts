@@ -56,3 +56,36 @@ export function cleanTagline(raw: string | undefined | null): string {
     .trim()
     .slice(0, 140);
 }
+
+export type PostResult =
+  | { ok: true; url: string; author: string; id: string }
+  | { ok: false; error: string };
+
+/**
+ * Accepte un lien de post X sous n'importe quelle forme courante
+ * (x.com, twitter.com, avec ou sans https, avec des paramètres de tracking)
+ * et renvoie la forme canonique.
+ */
+export function parsePostUrl(raw: string): PostResult {
+  const value = (raw ?? "").trim();
+  if (!value) return { ok: false, error: "" };
+
+  const cleaned = value
+    .replace(/^https?:\/\//i, "")
+    .replace(/^www\./i, "")
+    .split(/[?#]/)[0];
+
+  const m = cleaned.match(
+    /^(?:twitter\.com|x\.com)\/([A-Za-z0-9_]{1,15})\/status(?:es)?\/(\d{1,25})\/?$/i
+  );
+
+  if (!m) {
+    return {
+      ok: false,
+      error: "That should be a link to a post, like x.com/you/status/123…",
+    };
+  }
+
+  const [, author, id] = m;
+  return { ok: true, url: `https://x.com/${author}/status/${id}`, author, id };
+}
