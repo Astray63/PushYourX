@@ -3,6 +3,8 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 
@@ -35,6 +37,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main className="flex flex-1 flex-col">{children}</main>
           <Footer />
         </div>
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
