@@ -113,9 +113,9 @@ export function Leaderboard({
                 </p>
                 <button
                   onClick={() => onClaim(e.amount + 1)}
-                  className="cursor-pointer text-[11px] text-muted-foreground transition-colors hover:text-primary"
+                  className="cursor-pointer text-[11px] whitespace-nowrap text-muted-foreground opacity-100 transition-all hover:text-primary focus-visible:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                 >
-                  take it for {money(e.amount + 1)}
+                  claim this rank for {money(e.amount + 1)}
                 </button>
               </div>
             </li>
