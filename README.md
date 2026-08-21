@@ -38,8 +38,9 @@ npm run dev
 ```
 
 Sans `STRIPE_SECRET_KEY`, le site tourne en **mode démo** : la mise est validée sans paiement.
-Pratique pour développer — mais dès qu'une clé Stripe est présente, le mode démo se coupe tout
-seul et plus rien ne peut entrer sur le board sans paiement.
+Pratique pour développer — et strictement limité au développement : le mode démo ne s'active
+que si `NODE_ENV` et `VERCEL_ENV` valent autre chose que `production`. En production, une clé
+Stripe absente fait répondre `503` à `/api/checkout` plutôt que d'ouvrir le board gratuitement.
 
 ## Variables d'environnement
 
@@ -50,6 +51,7 @@ seul et plus rien ne peut entrer sur le board sans paiement.
 | `STRIPE_SECRET_KEY` | Active Stripe Checkout (sans elle → mode démo) |
 | `STRIPE_WEBHOOK_SECRET` | Vérifie la signature du webhook `checkout.session.completed` |
 | `NEXT_PUBLIC_SITE_URL` | Base des URLs de retour Stripe |
+| `VISITOR_SALT` | Optionnel. Clé HMAC des identifiants de visiteurs ; à défaut, `SUPABASE_SERVICE_ROLE_KEY` sert de clé |
 
 ## Paiements
 
@@ -59,9 +61,15 @@ Webhook Stripe à pointer sur `POST /api/webhook`. En local :
 stripe listen --forward-to localhost:3000/api/webhook
 ```
 
+Deux événements valident une mise : `checkout.session.completed` et
+`checkout.session.async_payment_succeeded`. Le premier **n'est pas une preuve de paiement** —
+les moyens à notification différée (SEPA, ACH, Bacs, Boleto, OXXO…) le déclenchent avec
+`payment_status: "unpaid"` — donc le webhook ne règle une mise que sur `payment_status === "paid"`.
+
 La page `/success` sert de filet : si le webhook n'est pas encore arrivé, elle relit la session
-Stripe et valide la mise elle-même. `fulfill()` est idempotent, donc les deux chemins ne peuvent
-pas encaisser deux fois.
+Stripe et valide la mise elle-même. `fulfill()` est idempotent : la session est verrouillée par
+une écriture atomique (`update … where settled = false returning *`), pas par une lecture, donc
+les deux chemins ne peuvent pas encaisser deux fois même lancés en parallèle.
 
 ## Base de données
 

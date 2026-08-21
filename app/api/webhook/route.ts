@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { settleBid, settleTakeover } from "@/lib/board";
-import { getPending, markSettled } from "@/lib/pending";
+import { claimPending, getPending, releasePending } from "@/lib/pending";
 import { stripe } from "@/lib/stripe";
 
 export const runtime = "nodejs";
@@ -25,8 +25,18 @@ export async function POST(req: Request) {
     );
   }
 
-  if (event.type === "checkout.session.completed") {
+  // `checkout.session.completed` n'est PAS une preuve de paiement : les moyens
+  // à notification différée (SEPA, ACH, Bacs, Boleto, OXXO…) le déclenchent avec
+  // payment_status "unpaid", et ne confirment qu'ensuite via async_payment_succeeded.
+  if (
+    event.type === "checkout.session.completed" ||
+    event.type === "checkout.session.async_payment_succeeded"
+  ) {
     const session = event.data.object;
+    if (session.payment_status !== "paid") {
+      return NextResponse.json({ received: true, ignored: session.payment_status });
+    }
+
     const pendingId = session.metadata?.pendingId ?? session.client_reference_id;
     if (pendingId) await fulfill(pendingId);
   }
@@ -34,23 +44,32 @@ export async function POST(req: Request) {
   return NextResponse.json({ received: true });
 }
 
-/** Écrit la mise en base. Idempotent : une session déjà réglée ne fait rien. */
+/**
+ * Écrit la mise en base. Idempotent : la session est verrouillée par l'écriture
+ * (`claimPending`) et non par une lecture préalable, donc deux appels simultanés
+ * — webhook et /success — ne peuvent pas encaisser deux fois.
+ */
 export async function fulfill(pendingId: string) {
-  const p = await getPending(pendingId);
-  if (!p || p.settled) return p;
+  const p = await claimPending(pendingId);
+  if (!p) return getPending(pendingId); // inconnue ou déjà réglée
 
-  if (p.kind === "takeover") await settleTakeover(p.handle, p.tagline, p.amount);
-  else
-    await settleBid(
-      p.handle,
-      p.display || p.handle,
-      p.tagline,
-      p.amount,
-      p.post_url ?? "",
-      p.post_text ?? "",
-      p.post_author ?? ""
-    );
+  try {
+    if (p.kind === "takeover") await settleTakeover(p.handle, p.tagline, p.amount);
+    else
+      await settleBid(
+        p.handle,
+        p.display || p.handle,
+        p.tagline,
+        p.amount,
+        p.post_url ?? "",
+        p.post_text ?? "",
+        p.post_author ?? ""
+      );
+  } catch (err) {
+    // La mise n'est pas passée : on relâche pour que Stripe retente.
+    await releasePending(pendingId);
+    throw err;
+  }
 
-  await markSettled(pendingId);
   return getPending(pendingId);
 }

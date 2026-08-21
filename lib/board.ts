@@ -3,6 +3,8 @@ import { cleanTagline } from "./x";
 import type { Activity, Entry, Stats, Takeover, Trend } from "./types";
 
 export const MIN_BID = 2;
+/** Plafond : bids.amount est un integer, et Stripe plafonne à 999 999,99 $. */
+export const MAX_BID = 999_999;
 export const TAKEOVER_HOURS = 3;
 
 type BidRow = {

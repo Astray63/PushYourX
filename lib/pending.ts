@@ -16,6 +16,8 @@ export type Pending = {
   created_at: string;
 };
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 export async function createPending(
   handle: string,
   display: string,
@@ -45,6 +47,10 @@ export async function createPending(
 }
 
 export async function getPending(id: string): Promise<Pending | undefined> {
+  // Un id mal formé ferait échouer le cast uuid côté Postgres, donc un 500
+  // sur une simple visite de /success?p=nimportequoi.
+  if (!UUID_RE.test(id)) return undefined;
+
   const { data, error } = await supabase
     .from("pending")
     .select("*")
@@ -52,6 +58,31 @@ export async function getPending(id: string): Promise<Pending | undefined> {
     .maybeSingle();
   if (error) throw error;
   return (data as Pending | null) ?? undefined;
+}
+
+/**
+ * Prend la session en charge de façon atomique : un seul appelant peut voir
+ * `settled` passer de false à true. Le webhook et /success peuvent donc courir
+ * en parallèle sans encaisser deux fois. Renvoie undefined si déjà réglée.
+ */
+export async function claimPending(id: string): Promise<Pending | undefined> {
+  if (!UUID_RE.test(id)) return undefined;
+
+  const { data, error } = await supabase
+    .from("pending")
+    .update({ settled: true })
+    .eq("id", id)
+    .eq("settled", false)
+    .select("*")
+    .maybeSingle();
+  if (error) throw error;
+  return (data as Pending | null) ?? undefined;
+}
+
+/** Rend la session si l'écriture qui suit a échoué, pour que Stripe retente. */
+export async function releasePending(id: string) {
+  const { error } = await supabase.from("pending").update({ settled: false }).eq("id", id);
+  if (error) throw error;
 }
 
 export async function markSettled(id: string) {

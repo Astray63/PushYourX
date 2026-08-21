@@ -2,8 +2,20 @@
 
 const HANDLE_RE = /^[A-Za-z0-9_]{1,15}$/;
 
+/**
+ * Réservés. Ne remplace pas une preuve de propriété du handle : tant qu'il
+ * n'y a pas d'OAuth X, n'importe qui peut lister n'importe quel compte.
+ * Cette liste ne couvre que les noms de service et les cas les plus évidents.
+ */
 const BLOCKED = new Set([
-  "admin", "twitter", "x", "support", "root", "null", "undefined",
+  // plateforme et noms de service
+  "admin", "administrator", "twitter", "twittersupport", "x", "xsupport",
+  "support", "help", "root", "system", "security", "staff", "official",
+  "moderator", "mod", "team", "billing", "payments", "verified",
+  // le site lui-meme
+  "pushyourx", "push_your_x", "pushyourxlol",
+  // valeurs sentinelles qui trainent dans les formulaires
+  "null", "undefined", "nan", "none", "test",
 ]);
 
 export type HandleResult =

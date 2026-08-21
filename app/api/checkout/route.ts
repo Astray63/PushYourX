@@ -7,6 +7,7 @@ import {
   fetchPostPreview,
 } from "@/lib/x";
 import {
+  MAX_BID,
   MIN_BID,
   TAKEOVER_HOURS,
   findByHandle,
@@ -18,12 +19,17 @@ import {
   takeoverPrice,
 } from "@/lib/board";
 import { createPending, markSettled } from "@/lib/pending";
-import { isDemo, siteUrl, stripe } from "@/lib/stripe";
+import { isDemo, paymentsUnavailable, siteUrl, stripe } from "@/lib/stripe";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
+  // Stripe absent hors développement : rien ne doit entrer sur le board.
+  if (paymentsUnavailable) {
+    return NextResponse.json({ error: "Payments are unavailable." }, { status: 503 });
+  }
+
   let body: Record<string, unknown>;
   try {
     body = await req.json();
@@ -50,7 +56,9 @@ export async function POST(req: Request) {
     preview = await fetchPostPreview(postUrl);
   }
 
-  if (!Number.isFinite(amount)) {
+  // Plancher ET plafond : la colonne est un integer et Stripe refuse
+  // au-delà de 999 999,99 $. Sans borne haute, la route part en 500.
+  if (!Number.isFinite(amount) || amount > MAX_BID) {
     return NextResponse.json({ error: "Enter a whole dollar amount." }, { status: 400 });
   }
 
