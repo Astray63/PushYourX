@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { parseHandle, cleanTagline } from "@/lib/x";
+import { parseHandle, cleanTagline, avatarUrlSafe } from "@/lib/x";
 import {
   MIN_BID,
+  TAKEOVER_HOURS,
   findByHandle,
   nextBid,
   priceFor,
@@ -72,12 +73,20 @@ export async function POST(req: Request) {
   }
 
   const rank = kind === "takeover" ? 0 : await rankForAmount(amount, parsed.handle);
+  const isTakeover = kind === "takeover";
+  const pretty = `$${amount.toLocaleString("en-US")}`;
+  const existingBid = isTakeover ? undefined : await findByHandle(parsed.handle);
+
   const session = await stripe.checkout.sessions.create({
     mode: "payment",
+    locale: "auto",
+    submit_type: "pay",
     success_url: `${siteUrl()}/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${siteUrl()}/?canceled=1`,
     client_reference_id: pendingId,
-    metadata: { pendingId },
+    metadata: { pendingId, handle: parsed.handle, kind, amount: String(amount) },
+    // Une enchère bouge vite : une session qui traîne une journée n'a pas de sens.
+    expires_at: Math.floor(Date.now() / 1000) + 60 * 60,
     line_items: [
       {
         quantity: 1,
@@ -85,18 +94,33 @@ export async function POST(req: Request) {
           currency: "usd",
           unit_amount: Math.max(charge, 1) * 100,
           product_data: {
-            name:
-              kind === "takeover"
-                ? "Push Your X — 3 hour takeover"
-                : `Push Your X — rank #${rank} for @${parsed.display}`,
-            description:
-              kind === "takeover"
-                ? "Your handle owns the top of the board for 3 hours."
-                : `Bid of $${amount.toLocaleString("en-US")} on the leaderboard.`,
+            name: isTakeover
+              ? `Takeover — @${parsed.display} above the whole board`
+              : `Rank #${rank} — @${parsed.display}`,
+            description: isTakeover
+              ? `Your handle sits above #1 on every page for ${TAKEOVER_HOURS} hours, with a live countdown.`
+              : existingBid
+                ? `Raising @${parsed.display} from $${existingBid.amount.toLocaleString(
+                    "en-US"
+                  )} to ${pretty}. You are charged only the difference.`
+                : `${pretty} on the leaderboard, linking straight to x.com/${parsed.display}.`,
+            images: [avatarUrlSafe(parsed.display)],
           },
         },
       },
     ],
+    payment_intent_data: {
+      description: isTakeover
+        ? `push your.x — takeover for @${parsed.display}`
+        : `push your.x — rank #${rank} for @${parsed.display} at ${pretty}`,
+    },
+    custom_text: {
+      submit: {
+        message: isTakeover
+          ? `The banner goes live the moment this clears, and runs for ${TAKEOVER_HOURS} hours.`
+          : "Your rank is live the moment this clears. It holds until somebody pays a dollar more.",
+      },
+    },
   });
 
   return NextResponse.json({ url: session.url });

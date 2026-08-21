@@ -46,6 +46,10 @@ export const profileUrl = (handle: string) =>
 export const avatarUrl = (handle: string) =>
   `https://unavatar.io/x/${handle}?fallback=false`;
 
+/** Variante pour Stripe : jamais de 404, sinon la session refuse l'image. */
+export const avatarUrlSafe = (handle: string) =>
+  `https://unavatar.io/x/${handle}`;
+
 export function cleanTagline(raw: string | undefined | null): string {
   return (raw ?? "")
     .replace(/\s+/g, " ")

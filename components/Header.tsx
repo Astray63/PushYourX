@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./ThemeToggle";
@@ -20,22 +21,17 @@ export function Header() {
         <div className="flex items-center justify-between gap-3 lg:justify-start">
           <Link
             href="/"
-            className="inline-flex shrink-0 items-center gap-2 text-lg font-semibold tracking-[-0.04em] sm:text-xl"
+            aria-label="push your.x — home"
+            className="inline-flex shrink-0 items-center"
           >
-            <span className="grid size-8 shrink-0 place-items-center rounded-xl bg-primary text-primary-fg">
-              <svg viewBox="0 0 24 24" className="size-4" fill="none" aria-hidden>
-                <path
-                  d="M9.4 6.6 5.2 12l4.2 5.4M14.6 6.6 18.8 12l-4.2 5.4"
-                  stroke="currentColor"
-                  strokeWidth="2.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </span>
-            <span className="whitespace-nowrap">
-              push your<span className="text-primary">.</span>x
-            </span>
+            <Image
+              src="/logo-mark-transparent.png"
+              alt=""
+              width={512}
+              height={512}
+              className="size-10 object-contain sm:size-11"
+              preload
+            />
           </Link>
 
           {/* Actions compactes, mobile uniquement */}
