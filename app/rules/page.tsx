@@ -3,7 +3,7 @@ import Link from "next/link";
 import { MIN_BID, TAKEOVER_HOURS } from "@/lib/board";
 
 export const metadata: Metadata = {
-  title: "Rules · push your.x",
+  title: "Rules",
   description: "How the bidding works and what you are allowed to list.",
 };
 

@@ -4,7 +4,7 @@ import { stats } from "@/lib/board";
 import { money } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: "About · push your.x",
+  title: "About",
   description: "Why a paid leaderboard for X accounts exists.",
 };
 

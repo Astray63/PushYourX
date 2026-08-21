@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
-import { parseHandle, cleanTagline, avatarUrlSafe, parsePostUrl } from "@/lib/x";
+import {
+  parseHandle,
+  cleanTagline,
+  avatarUrlSafe,
+  parsePostUrl,
+  fetchPostPreview,
+} from "@/lib/x";
 import {
   MIN_BID,
   TAKEOVER_HOURS,
@@ -35,10 +41,13 @@ export async function POST(req: Request) {
   // Le post est facultatif : vide passe, mal formé est refusé.
   const rawPost = String(body.post ?? "").trim();
   let postUrl = "";
+  let preview = { text: "", author: "" };
   if (rawPost) {
     const post = parsePostUrl(rawPost);
     if (!post.ok) return NextResponse.json({ error: post.error }, { status: 400 });
     postUrl = post.url;
+    // Résolu ici plutôt que dans le webhook : Stripe abandonne un webhook lent.
+    preview = await fetchPostPreview(postUrl);
   }
 
   if (!Number.isFinite(amount)) {
@@ -77,13 +86,24 @@ export async function POST(req: Request) {
     tagline,
     amount,
     kind,
-    postUrl
+    postUrl,
+    preview.text,
+    preview.author
   );
 
   // Mode démo : aucune clé Stripe, la mise est validée immédiatement.
   if (isDemo || !stripe) {
     if (kind === "takeover") await settleTakeover(parsed.handle, tagline, amount);
-    else await settleBid(parsed.handle, parsed.display, tagline, amount, postUrl);
+    else
+      await settleBid(
+        parsed.handle,
+        parsed.display,
+        tagline,
+        amount,
+        postUrl,
+        preview.text,
+        preview.author
+      );
     await markSettled(pendingId);
     return NextResponse.json({ demo: true, url: `/success?p=${pendingId}` });
   }

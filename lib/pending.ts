@@ -8,6 +8,8 @@ export type Pending = {
   display: string;
   tagline: string;
   post_url: string;
+  post_text: string;
+  post_author: string;
   amount: number;
   kind: Kind;
   settled: boolean;
@@ -20,11 +22,22 @@ export async function createPending(
   tagline: string,
   amount: number,
   kind: Kind,
-  postUrl = ""
+  postUrl = "",
+  postText = "",
+  postAuthor = ""
 ): Promise<string> {
   const { data, error } = await supabase
     .from("pending")
-    .insert({ handle, display, tagline, amount, kind, post_url: postUrl })
+    .insert({
+      handle,
+      display,
+      tagline,
+      amount,
+      kind,
+      post_url: postUrl,
+      post_text: postText,
+      post_author: postAuthor,
+    })
     .select("id")
     .single();
   if (error) throw error;

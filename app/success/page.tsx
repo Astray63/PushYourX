@@ -7,7 +7,7 @@ import { money } from "@/lib/format";
 import { stripe } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "You're on the board · push your.x" };
+export const metadata = { title: "You're on the board" };
 
 async function resolvePending(params: { p?: string; session_id?: string }) {
   if (params.p) return getPending(params.p);
