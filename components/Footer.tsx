@@ -16,6 +16,9 @@ export function Footer({ d }: { d: Dict }) {
           <Link href="/about" className="transition-colors hover:text-primary">
             {d.nav.about}
           </Link>
+          <Link href="/privacy" className="transition-colors hover:text-primary">
+            {d.nav.privacy}
+          </Link>
           <a
             href="https://x.com/shiptesapps"
             target="_blank"

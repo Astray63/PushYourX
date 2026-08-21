@@ -23,7 +23,7 @@ export function langFromHeader(header: string | null | undefined): Lang {
 }
 
 const en = {
-  nav: { leaderboard: "Leaderboard", about: "About", rules: "Rules", cta: "Push my X" },
+  nav: { leaderboard: "Leaderboard", about: "About", rules: "Rules", privacy: "Privacy", cta: "Push my X" },
   stats: {
     online: "{n} online",
     visitors: "{n} visitors since launch",
@@ -167,6 +167,53 @@ const en = {
     ],
   },
 
+  privacy: {
+    title: "Privacy",
+    lead: "What this site stores, why, and for how long. It is a short page because there is not much to store.",
+    updated: "Last updated 21 August 2026",
+    back: "Back to the board",
+    sections: [
+      {
+        h: "What is stored",
+        items: [
+          "Paid rows: the X handle, the amount, an optional tagline and post link. All of it is public. That is the product.",
+          "A visitor count: your IP address and browser string are folded into a fingerprint with a secret server key. The key never leaves the server, so the fingerprint cannot be turned back into your address.",
+          "Two cookies: your language (en or fr) and your theme (dark or nothing). No identifier, no tracking.",
+        ],
+      },
+      {
+        h: "What is not stored",
+        items: [
+          "No account, no password, no email address. There is nothing to log into.",
+          "No card details. Stripe handles the payment end to end and we never see the numbers.",
+          "No advertising trackers, no third-party cookies, and nothing is sold to anybody.",
+        ],
+      },
+      {
+        h: "For how long",
+        items: [
+          "Visitor fingerprints are deleted automatically after 30 days, every night.",
+          "The total visitor number is kept on its own, as a plain count with nothing personal attached to it.",
+          "A paid row stays on the board until somebody pays more. That is the whole point of the board.",
+        ],
+      },
+      {
+        h: "Who else is involved",
+        items: [
+          "Stripe processes payments and keeps the billing data it needs for that.",
+          "Supabase hosts the database, in the EU (Paris).",
+          "Vercel hosts the site and measures audience and speed without cookies.",
+        ],
+      },
+      {
+        h: "Removal and questions",
+        items: [
+          "Want a row taken down, whether it is yours or about you? Message @shiptesapps on X and it comes off.",
+          "Same address to ask what is held about you, or to have it erased.",
+        ],
+      },
+    ],
+  },
   success: {
     rank: "Rank #{n}",
     onBoard: "@{handle} is on the board.",
@@ -181,7 +228,7 @@ const en = {
 };
 
 const fr: typeof en = {
-  nav: { leaderboard: "Classement", about: "À propos", rules: "Règles", cta: "Pousser mon X" },
+  nav: { leaderboard: "Classement", about: "À propos", rules: "Règles", privacy: "Confidentialité", cta: "Pousser mon X" },
   stats: {
     online: "{n} en ligne",
     visitors: "{n} visiteurs depuis le lancement",
@@ -326,6 +373,53 @@ const fr: typeof en = {
     ],
   },
 
+  privacy: {
+    title: "Confidentialité",
+    lead: "Ce que ce site conserve, pourquoi, et combien de temps. La page est courte parce qu'il n'y a pas grand-chose à conserver.",
+    updated: "Mise à jour le 21 août 2026",
+    back: "Retour au classement",
+    sections: [
+      {
+        h: "Ce qui est conservé",
+        items: [
+          "Les lignes payées : le handle X, le montant, une accroche et un lien de post facultatifs. Tout est public, c'est le produit.",
+          "Un comptage de visiteurs : ton adresse IP et ton navigateur sont réduits à une empreinte calculée avec une clé secrète. La clé ne quitte jamais le serveur, l'empreinte ne peut donc pas être retransformée en adresse.",
+          "Deux cookies : ta langue (en ou fr) et ton thème (sombre, ou rien). Aucun identifiant, aucun pistage.",
+        ],
+      },
+      {
+        h: "Ce qui n'est pas conservé",
+        items: [
+          "Aucun compte, aucun mot de passe, aucune adresse e-mail. Il n'y a rien où se connecter.",
+          "Aucune donnée de carte. Stripe gère le paiement de bout en bout, les numéros ne passent jamais par ici.",
+          "Aucun traceur publicitaire, aucun cookie tiers, et rien n'est revendu à qui que ce soit.",
+        ],
+      },
+      {
+        h: "Combien de temps",
+        items: [
+          "Les empreintes de visiteurs sont supprimées automatiquement au bout de 30 jours, chaque nuit.",
+          "Le total de visiteurs est gardé à part, comme un simple nombre, sans rien de personnel attaché.",
+          "Une ligne payée reste au classement jusqu'à ce que quelqu'un paie plus. C'est tout l'intérêt du classement.",
+        ],
+      },
+      {
+        h: "Qui d'autre intervient",
+        items: [
+          "Stripe traite les paiements et conserve les données de facturation nécessaires.",
+          "Supabase héberge la base de données, dans l'UE (Paris).",
+          "Vercel héberge le site et mesure l'audience et la vitesse sans cookie.",
+        ],
+      },
+      {
+        h: "Retrait et questions",
+        items: [
+          "Tu veux faire retirer une ligne, la tienne ou une qui te concerne ? Écris à @shiptesapps sur X, elle saute.",
+          "Même adresse pour demander ce qui est conservé à ton sujet, ou en demander l'effacement.",
+        ],
+      },
+    ],
+  },
   success: {
     rank: "Place n°{n}",
     onBoard: "@{handle} est sur le tableau.",
