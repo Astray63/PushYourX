@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { Avatar } from "./Avatar";
 import { money } from "@/lib/format";
-import type { Dict } from "@/lib/i18n";
+import { fill, type Dict } from "@/lib/i18n";
 
 type Props = {
   nextBid: number;
@@ -54,7 +54,7 @@ export function BidForm({ nextBid, minBid, entries, onDone, d }: Props) {
   return (
     <section className="scroll-mt-6">
       <h2 className="flex flex-wrap items-center justify-center gap-x-2 text-center text-[28px] font-bold tracking-[-0.03em] text-pretty md:text-[40px]">
-        <span>{d.form.claim(rank)}</span>
+        <span>{fill(d.form.claim, { rank })}</span>
         <span className="inline-flex items-center gap-2">
           <button
             type="button"
@@ -158,23 +158,14 @@ export function BidForm({ nextBid, minBid, entries, onDone, d }: Props) {
 
         <p className="text-center text-xs leading-relaxed text-muted-foreground text-pretty">
           {existing ? (
-            (() => {
-              const p = d.form.alreadyOn(
-                `@${cleanHandle}`,
-                money(existing.amount),
-                money(owed)
-              );
-              return (
-                <>
-                  <span className="font-semibold text-primary">{p.handle}</span>
-                  {p.before}
-                  {p.amount}
-                  {p.middle}
-                  <span className="font-semibold text-foreground">{p.owed}</span>
-                  {p.after}
-                </>
-              );
-            })()
+            <>
+              <span className="font-semibold text-primary">@{cleanHandle}</span>
+              {d.form.alreadyOnBefore}
+              {money(existing.amount)}
+              {d.form.alreadyOnMiddle}
+              <span className="font-semibold text-foreground">{money(owed)}</span>
+              {d.form.alreadyOnAfter}
+            </>
           ) : (
             <>{d.form.postHint}</>
           )}

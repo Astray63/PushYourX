@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import { cookies } from "next/headers";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
@@ -40,22 +41,16 @@ export const metadata: Metadata = {
   },
 };
 
-/** Applique le thème avant le premier paint pour éviter le flash. */
-/** Le site s'ouvre en clair. Le sombre ne s'applique que si le visiteur l'a choisi. */
-const themeScript = `try{if(localStorage.getItem("pyx-theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}`;
-
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const { lang, d } = await getDict();
+  const dark = (await cookies()).get("pyx-theme")?.value === "dark";
 
   return (
-    <html lang={lang} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
-      </head>
+    <html lang={lang} className={dark ? "dark" : undefined}>
       <body className={`${sans.variable} min-h-full font-sans antialiased`}>
         <div className="aurora" />
         <div className="flex min-h-dvh flex-col">
-          <Header lang={lang} d={d} />
+          <Header lang={lang} d={d} initialDark={dark} />
           <main className="flex flex-1 flex-col">{children}</main>
           <Footer d={d} />
         </div>

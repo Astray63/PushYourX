@@ -3,7 +3,7 @@
 import { Avatar } from "./Avatar";
 import { ago, money } from "@/lib/format";
 import type { Entry } from "@/lib/types";
-import type { Dict } from "@/lib/i18n";
+import { fill, type Dict } from "@/lib/i18n";
 
 /** Plus le rang est haut, plus la ligne est teintée. */
 function tone(rank: number) {
@@ -112,9 +112,9 @@ export function Leaderboard({
                   <span className="text-primary/80">{ago(e.updated_at, d.board.ago)}</span>
                   <span className="size-1 rounded-full bg-primary/50" />
                   <span className="font-semibold text-muted-foreground">
-                    {e.clicks === 1
-                      ? d.cards.click(e.clicks.toLocaleString("en-US"))
-                      : d.cards.clicks(e.clicks.toLocaleString("en-US"))}
+                    {fill(e.clicks === 1 ? d.cards.click : d.cards.clicks, {
+                      n: e.clicks.toLocaleString("en-US"),
+                    })}
                   </span>
                 </p>
               </div>
@@ -127,7 +127,7 @@ export function Leaderboard({
                   onClick={() => onClaim(e.amount + 1)}
                   className="cursor-pointer text-[11px] whitespace-nowrap text-muted-foreground opacity-100 transition-all hover:text-primary focus-visible:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                 >
-                  {d.board.claimRank(money(e.amount + 1))}
+                  {fill(d.board.claimRank, { amount: money(e.amount + 1) })}
                 </button>
               </div>
             </li>

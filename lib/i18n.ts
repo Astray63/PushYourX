@@ -25,8 +25,8 @@ export function langFromHeader(header: string | null | undefined): Lang {
 const en = {
   nav: { leaderboard: "Leaderboard", about: "About", rules: "Rules", cta: "Push my X" },
   stats: {
-    online: (n: string) => `${n} online`,
-    visitors: (n: string) => `${n} visitors since launch`,
+    online: "{n} online",
+    visitors: "{n} visitors since launch",
     seeStats: "see stats",
   },
   hero: {
@@ -34,7 +34,7 @@ const en = {
     kicker: "How much is #1 worth to you?",
   },
   form: {
-    claim: (rank: number) => `Claim #${rank} for`,
+    claim: "Claim #{rank} for",
     amountLabel: "Amount in dollars",
     lower: "Lower the bid",
     raise: "Raise the bid",
@@ -46,14 +46,9 @@ const en = {
     submitting: "One second…",
     postHint:
       "Paste a post link and your row shows it off, so the board sells your launch and not just your handle.",
-    alreadyOn: (handle: string, amount: string, owed: string) => ({
-      handle,
-      before: " is already on the board at ",
-      amount,
-      middle: ", so you only pay the difference, ",
-      owed,
-      after: ".",
-    }),
+    alreadyOnBefore: " is already on the board at ",
+    alreadyOnMiddle: ", so you only pay the difference, ",
+    alreadyOnAfter: ".",
     networkError: "Network error, try again.",
     genericError: "Something went wrong.",
   },
@@ -64,20 +59,24 @@ const en = {
     noTrending: "No clicks in the last hour yet.",
     joinedAt: "joined at",
     raisedTo: "raised to",
-    clicks: (n: string) => `${n} clicks`,
-    click: (n: string) => `${n} click`,
+    clicks: "{n} clicks",
+    click: "{n} click",
   },
   board: {
     refresh: "Refresh",
     empty: "The board is empty. Two dollars puts your handle at the top of nothing, for now.",
-    claimRank: (amount: string) => `claim this rank for ${amount}`,
+    claimRank: "claim this rank for {amount}",
     seePost: "See the post",
     ago: {
-      seconds: (n: number) => `${n}s ago`,
-      minutes: (n: number) => `${n} minute${n > 1 ? "s" : ""} ago`,
-      hours: (n: number) => `${n} hour${n > 1 ? "s" : ""} ago`,
-      days: (n: number) => `${n} day${n > 1 ? "s" : ""} ago`,
-      months: (n: number) => `${n} month${n > 1 ? "s" : ""} ago`,
+      seconds: "{n}s ago",
+      minutes_one: "{n} minute ago",
+      minutes_other: "{n} minutes ago",
+      hours_one: "{n} hour ago",
+      hours_other: "{n} hours ago",
+      days_one: "{n} day ago",
+      days_other: "{n} days ago",
+      months_one: "{n} month ago",
+      months_other: "{n} months ago",
     },
   },
   footer: {
@@ -169,23 +168,23 @@ const en = {
   },
 
   success: {
-    rank: (n: number) => `Rank #${n}`,
-    onBoard: (handle: string) => `@${handle} is on the board.`,
-    holding: (amount: string) =>
-      `${amount} is holding your place. It holds until somebody pays a dollar more, and you will find out fast when they do.`,
+    rank: "Rank #{n}",
+    onBoard: "@{handle} is on the board.",
+    holding:
+      "{amount} is holding your place. It holds until somebody pays a dollar more, and you will find out fast when they do.",
     received: "Payment received.",
     writing: "Your row is being written. Refresh the board in a few seconds. If it is still not there, the reference is",
     seeBoard: "See the board",
     dare: "Dare them on X",
-    dareText: (n: number) => `I'm #${n} on PushYourX. Come take it from me.`,
+    dareText: "I'm #{n} on PushYourX. Come take it from me.",
   },
 };
 
 const fr: typeof en = {
   nav: { leaderboard: "Classement", about: "À propos", rules: "Règles", cta: "Pousser mon X" },
   stats: {
-    online: (n: string) => `${n} en ligne`,
-    visitors: (n: string) => `${n} visiteurs depuis le lancement`,
+    online: "{n} en ligne",
+    visitors: "{n} visiteurs depuis le lancement",
     seeStats: "voir les stats",
   },
   hero: {
@@ -193,7 +192,7 @@ const fr: typeof en = {
     kicker: "Combien vaut la première place pour toi ?",
   },
   form: {
-    claim: (rank: number) => `Prendre la place n°${rank} pour`,
+    claim: "Prendre la place n°{rank} pour",
     amountLabel: "Montant en dollars",
     lower: "Baisser la mise",
     raise: "Augmenter la mise",
@@ -205,14 +204,9 @@ const fr: typeof en = {
     submitting: "Un instant…",
     postHint:
       "Colle le lien d'un post et ta ligne l'affiche : le tableau met en avant ton lancement, pas seulement ton pseudo.",
-    alreadyOn: (handle: string, amount: string, owed: string) => ({
-      handle,
-      before: " est déjà sur le tableau à ",
-      amount,
-      middle: ", tu ne paies donc que la différence, ",
-      owed,
-      after: ".",
-    }),
+    alreadyOnBefore: " est déjà sur le tableau à ",
+    alreadyOnMiddle: ", tu ne paies donc que la différence, ",
+    alreadyOnAfter: ".",
     networkError: "Erreur réseau, réessaie.",
     genericError: "Une erreur est survenue.",
   },
@@ -223,20 +217,24 @@ const fr: typeof en = {
     noTrending: "Aucun clic dans la dernière heure.",
     joinedAt: "est entré à",
     raisedTo: "est monté à",
-    clicks: (n: string) => `${n} clics`,
-    click: (n: string) => `${n} clic`,
+    clicks: "{n} clics",
+    click: "{n} clic",
   },
   board: {
     refresh: "Actualiser",
     empty: "Le tableau est vide. Deux dollars te placent en tête de rien du tout, pour l'instant.",
-    claimRank: (amount: string) => `prendre cette place pour ${amount}`,
+    claimRank: "prendre cette place pour {amount}",
     seePost: "Voir le post",
     ago: {
-      seconds: (n: number) => `il y a ${n} s`,
-      minutes: (n: number) => `il y a ${n} minute${n > 1 ? "s" : ""}`,
-      hours: (n: number) => `il y a ${n} heure${n > 1 ? "s" : ""}`,
-      days: (n: number) => `il y a ${n} jour${n > 1 ? "s" : ""}`,
-      months: (n: number) => `il y a ${n} mois`,
+      seconds: "il y a {n} s",
+      minutes_one: "il y a {n} minute",
+      minutes_other: "il y a {n} minutes",
+      hours_one: "il y a {n} heure",
+      hours_other: "il y a {n} heures",
+      days_one: "il y a {n} jour",
+      days_other: "il y a {n} jours",
+      months_one: "il y a {n} mois",
+      months_other: "il y a {n} mois",
     },
   },
   footer: {
@@ -329,17 +327,37 @@ const fr: typeof en = {
   },
 
   success: {
-    rank: (n: number) => `Place n°${n}`,
-    onBoard: (handle: string) => `@${handle} est sur le tableau.`,
-    holding: (amount: string) =>
-      `${amount} tiennent ta place. Elle tient jusqu'à ce que quelqu'un paie un dollar de plus, et tu le sauras vite.`,
+    rank: "Place n°{n}",
+    onBoard: "@{handle} est sur le tableau.",
+    holding:
+      "{amount} tiennent ta place. Elle tient jusqu'à ce que quelqu'un paie un dollar de plus, et tu le sauras vite.",
     received: "Paiement reçu.",
     writing: "Ta ligne est en cours d'écriture. Actualise le tableau dans quelques secondes. Si elle n'y est toujours pas, la référence est",
     seeBoard: "Voir le tableau",
     dare: "Lance le défi sur X",
-    dareText: (n: number) => `Je suis n°${n} sur PushYourX. Viens me la prendre.`,
+    dareText: "Je suis n°{n} sur PushYourX. Viens me la prendre.",
   },
 };
+
+/**
+ * Remplit un modèle : "{n} online" + { n: "5" } -> "5 online".
+ * Le dictionnaire ne contient que des chaînes, jamais de fonctions :
+ * une fonction ne peut pas franchir la frontière serveur -> client.
+ */
+export function fill(template: string, vars: Record<string, string | number>): string {
+  return template.replace(/\{(\w+)\}/g, (_, k) =>
+    k in vars ? String(vars[k]) : `{${k}}`
+  );
+}
+
+/** Choisit la forme singulier/pluriel puis interpole. */
+export function plural(
+  words: { one: string; other: string },
+  n: number,
+  vars: Record<string, string | number> = {}
+): string {
+  return fill(n > 1 ? words.other : words.one, { n, ...vars });
+}
 
 export const dict = { en, fr };
 export type Dict = typeof en;

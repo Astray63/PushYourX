@@ -1,22 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-export function ThemeToggle() {
-  const [dark, setDark] = useState(false);
-
-  useEffect(() => {
-    // Clair par défaut : on ne passe en sombre que sur un choix explicite.
-    const on = localStorage.getItem("pyx-theme") === "dark";
-    setDark(on);
-    document.documentElement.classList.toggle("dark", on);
-  }, []);
+export function ThemeToggle({ initialDark }: { initialDark: boolean }) {
+  const [dark, setDark] = useState(initialDark);
 
   const toggle = () => {
     const next = !dark;
     setDark(next);
     document.documentElement.classList.toggle("dark", next);
     localStorage.setItem("pyx-theme", next ? "dark" : "light");
+    document.cookie = `pyx-theme=${next ? "dark" : "light"}; Path=/; Max-Age=31536000; SameSite=Lax`;
   };
 
   return (

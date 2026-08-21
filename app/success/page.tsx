@@ -6,6 +6,7 @@ import { findByHandle, rankForAmount } from "@/lib/board";
 import { money } from "@/lib/format";
 import { stripe } from "@/lib/stripe";
 import { getDict } from "@/lib/lang";
+import { fill } from "@/lib/i18n";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "You're on the board" };
@@ -42,13 +43,13 @@ export default async function SuccessPage({
               <Avatar handle={row.display_handle} size={64} />
             </div>
             <p className="text-sm font-bold tracking-wider text-primary uppercase">
-              {d.success.rank(rank)}
+              {fill(d.success.rank, { n: rank })}
             </p>
             <h1 className="mt-2 text-[28px] font-bold tracking-[-0.03em]">
-              {d.success.onBoard(row.display_handle)}
+              {fill(d.success.onBoard, { handle: row.display_handle })}
             </h1>
             <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-              {d.success.holding(money(row.amount))}
+              {fill(d.success.holding, { amount: money(row.amount) })}
             </p>
           </>
         ) : (
@@ -74,7 +75,7 @@ export default async function SuccessPage({
           {row && (
             <a
               href={`https://x.com/intent/post?text=${encodeURIComponent(
-                d.success.dareText(rank)
+                fill(d.success.dareText, { n: rank })
               )}`}
               target="_blank"
               rel="noreferrer"

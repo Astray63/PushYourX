@@ -7,7 +7,15 @@ import { ThemeToggle } from "./ThemeToggle";
 import { LangSwitch } from "./LangSwitch";
 import type { Dict, Lang } from "@/lib/i18n";
 
-export function Header({ lang, d }: { lang: Lang; d: Dict }) {
+export function Header({
+  lang,
+  d,
+  initialDark,
+}: {
+  lang: Lang;
+  d: Dict;
+  initialDark: boolean;
+}) {
   const path = usePathname();
 
   const nav = [
@@ -41,7 +49,7 @@ export function Header({ lang, d }: { lang: Lang; d: Dict }) {
           {/* Actions compactes, mobile uniquement */}
           <div className="flex items-center gap-1.5 lg:hidden">
             <LangSwitch lang={lang} label={d.langLabel} />
-            <ThemeToggle />
+            <ThemeToggle initialDark={initialDark} />
           </div>
         </div>
 
@@ -66,7 +74,7 @@ export function Header({ lang, d }: { lang: Lang; d: Dict }) {
         {/* Actions desktop */}
         <div className="hidden items-center justify-end gap-2 lg:flex">
           <LangSwitch lang={lang} label={d.langLabel} />
-          <ThemeToggle />
+          <ThemeToggle initialDark={initialDark} />
           <Link
             href="/#bid"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-bold tracking-[0.08em] whitespace-nowrap text-primary-fg uppercase transition-opacity hover:opacity-90"

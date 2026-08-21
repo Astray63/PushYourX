@@ -3,7 +3,7 @@
 import { Avatar } from "./Avatar";
 import { ago, money } from "@/lib/format";
 import type { Activity, Trend } from "@/lib/types";
-import type { Dict } from "@/lib/i18n";
+import { fill, type Dict } from "@/lib/i18n";
 
 function Card({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
   return (
@@ -80,9 +80,9 @@ export function ActivityCards({
                   @{t.display_handle}
                 </a>
                 <span className="ml-auto shrink-0 font-semibold tabular-nums text-muted-foreground">
-                  {t.hits === 1
-                    ? d.cards.click(t.hits.toLocaleString("en-US"))
-                    : d.cards.clicks(t.hits.toLocaleString("en-US"))}
+                  {fill(t.hits === 1 ? d.cards.click : d.cards.clicks, {
+                    n: t.hits.toLocaleString("en-US"),
+                  })}
                 </span>
               </li>
             ))}

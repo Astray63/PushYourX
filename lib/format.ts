@@ -1,25 +1,32 @@
+import { fill, plural } from "./i18n";
+
 export function money(n: number): string {
   return "$" + n.toLocaleString("en-US");
 }
 
 type AgoWords = {
-  seconds: (n: number) => string;
-  minutes: (n: number) => string;
-  hours: (n: number) => string;
-  days: (n: number) => string;
-  months: (n: number) => string;
+  seconds: string;
+  minutes_one: string;
+  minutes_other: string;
+  hours_one: string;
+  hours_other: string;
+  days_one: string;
+  days_other: string;
+  months_one: string;
+  months_other: string;
 };
 
 export function ago(ts: number, w: AgoWords): string {
   const s = Math.max(1, Math.floor((Date.now() - ts) / 1000));
-  if (s < 60) return w.seconds(s);
+  if (s < 60) return fill(w.seconds, { n: s });
   const m = Math.floor(s / 60);
-  if (m < 60) return w.minutes(m);
+  if (m < 60) return plural({ one: w.minutes_one, other: w.minutes_other }, m);
   const h = Math.floor(m / 60);
-  if (h < 24) return w.hours(h);
+  if (h < 24) return plural({ one: w.hours_one, other: w.hours_other }, h);
   const d = Math.floor(h / 24);
-  if (d < 30) return w.days(d);
-  return w.months(Math.floor(d / 30));
+  if (d < 30) return plural({ one: w.days_one, other: w.days_other }, d);
+  const months = Math.floor(d / 30);
+  return plural({ one: w.months_one, other: w.months_other }, months);
 }
 
 export function countdown(ms: number): string {
