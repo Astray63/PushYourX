@@ -46,14 +46,21 @@ function ordered() {
 }
 
 export async function page(pageNum: number, perPage = 50) {
-  const wanted = Math.max(1, Math.floor(pageNum) || 1);
-  const from = (wanted - 1) * perPage;
-
-  const { data, count, error } = await ordered().range(from, from + perPage - 1);
-  if (error) throw error;
+  // Le total vient d'abord : demander une plage au-delà des données fait
+  // répondre PostgREST en erreur, donc on borne la page avant de la lire.
+  const { count, error: countError } = await supabase
+    .from("bids")
+    .select("id", { count: "exact", head: true })
+    .eq("paid", true);
+  if (countError) throw countError;
 
   const total = count ?? 0;
   const pages = Math.max(1, Math.ceil(total / perPage));
+  const wanted = Math.min(Math.max(1, Math.floor(pageNum) || 1), pages);
+  const from = (wanted - 1) * perPage;
+
+  const { data, error } = await ordered().range(from, from + perPage - 1);
+  if (error) throw error;
 
   return {
     entries: (data as BidRow[]).map((r, i) => toEntry(r, from + i + 1)),
