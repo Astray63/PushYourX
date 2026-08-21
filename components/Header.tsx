@@ -21,7 +21,7 @@ export function Header() {
         <div className="flex items-center justify-between gap-3 lg:justify-start">
           <Link
             href="/"
-            aria-label="push your.x — home"
+            aria-label="push your.x, home"
             className="inline-flex shrink-0 items-center"
           >
             <Image
@@ -40,7 +40,7 @@ export function Header() {
           </div>
         </div>
 
-        {/* Liens — centrés sur desktop, sur une ligne dessous en mobile */}
+        {/* Liens : centrés sur desktop, sur une ligne dessous en mobile */}
         <nav className="mt-2 border-t border-border pt-2 lg:mt-0 lg:border-0 lg:pt-0">
           <ul className="flex items-center justify-center gap-1 sm:gap-2">
             {nav.map((n) => (

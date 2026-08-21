@@ -42,7 +42,7 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
       if (data.demo) onDone();
       window.location.href = data.url;
     } catch {
-      setError("Network error — try again.");
+      setError("Network error, try again.");
     } finally {
       setBusy(false);
     }
@@ -92,7 +92,7 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
 
       <p className="mx-auto mt-2 max-w-md text-center text-sm leading-relaxed text-muted-foreground text-pretty">
         Whatever you pay is where you land. Go below the top price and you are still on the
-        board — just further down the page.
+        board, just further down the page.
       </p>
 
       <form onSubmit={submit} className="mt-4 flex flex-col gap-3">
@@ -132,7 +132,7 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
           {existing ? (
             <>
               <span className="font-semibold text-primary">@{cleanHandle}</span> is already on the
-              board at {money(existing.amount)} — you only pay the difference,{" "}
+              board at {money(existing.amount)}, so you only pay the difference,{" "}
               <span className="font-semibold text-foreground">{money(owed)}</span>.
             </>
           ) : (

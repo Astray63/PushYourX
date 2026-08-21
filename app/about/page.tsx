@@ -4,7 +4,7 @@ import { stats } from "@/lib/board";
 import { money } from "@/lib/format";
 
 export const metadata: Metadata = {
-  title: "About — push your.x",
+  title: "About · push your.x",
   description: "Why a paid leaderboard for X accounts exists.",
 };
 
@@ -31,12 +31,12 @@ export default async function AboutPage() {
           a position on a list that other people are watching.
         </p>
         <p>
-          The interesting part is not the list — it is the fight over it. Every time somebody
+          The interesting part is not the list. It is the fight over it. Every time somebody
           takes #1, the account they pushed down has a reason to come back, and everyone watching
           has a reason to refresh.
         </p>
         <p className="font-semibold text-foreground">
-          Rank is the bid — nothing else. No recency weighting, no follower count, no secret
+          Rank is the bid, nothing else. No recency weighting, no follower count, no secret
           quality score. If that sounds unfair, it is, and it is the only rule that cannot be
           gamed.
         </p>
@@ -45,7 +45,7 @@ export default async function AboutPage() {
       <dl className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
           { k: "Handles listed", v: s.listed.toLocaleString("en-US") },
-          { k: "Top bid", v: s.top ? money(s.top) : "—" },
+          { k: "Top bid", v: money(s.top) },
           { k: "Total pushed", v: money(s.volume) },
           { k: "Visitors", v: s.visitors.toLocaleString("en-US") },
         ].map((x) => (
@@ -61,7 +61,7 @@ export default async function AboutPage() {
           The honest disclaimer
         </h2>
         <p className="mt-2.5 text-[15px] leading-relaxed text-muted-foreground">
-          Nobody is promised followers. A bid buys a row and the clicks that row earns — what
+          Nobody is promised followers. A bid buys a row and the clicks that row earns. What
           happens after somebody lands on your profile is entirely down to what you post. If your
           timeline is not worth following, no amount of money at the top of this page will fix
           that.

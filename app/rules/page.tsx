@@ -3,7 +3,7 @@ import Link from "next/link";
 import { MIN_BID, TAKEOVER_HOURS } from "@/lib/board";
 
 export const metadata: Metadata = {
-  title: "Rules — push your.x",
+  title: "Rules · push your.x",
   description: "How the bidding works and what you are allowed to list.",
 };
 
@@ -13,7 +13,7 @@ const sections = [
     items: [
       `Bids start at $${MIN_BID} and move in whole dollars. No cents.`,
       "The list is sorted by amount, highest first. On a tie, whoever got there first sits above.",
-      "Bidding below the top still gets you listed — you land at whatever rank your amount buys.",
+      "Bidding below the top still gets you listed, at whatever rank your amount buys.",
       "Already on the board? Enter the same handle with a bigger number. You are charged only the difference, and your row keeps its click count.",
       "There is no expiry. A row stays where it is until somebody pays more.",
     ],
@@ -21,7 +21,7 @@ const sections = [
   {
     h: "What you can list",
     items: [
-      "A public X handle — yours, or one you are pushing on purpose. Handles are 1–15 characters: letters, numbers, underscores.",
+      "A public X handle, yours or one you are pushing on purpose. Handles are 1–15 characters: letters, numbers, underscores.",
       "The optional line under your handle is plain text, 140 characters, no links.",
       "No adult accounts, no accounts built for harassment, no impersonation of a real person or company.",
       "No invite links to chat platforms and no referral parameters. The row points at x.com and nothing else.",
@@ -33,7 +33,7 @@ const sections = [
     items: [
       "Payment is taken up front through Stripe. Your row appears the moment it clears.",
       "Being outbid is not a refund event. You bought a rank at a price, and you keep whatever visibility that bought you.",
-      "Removals are free — ask and the row comes down. The money does not come back.",
+      "Removals are free: ask and the row comes down. The money does not come back.",
       `A takeover buys the banner above the board for ${TAKEOVER_HOURS} hours at double the current top bid. It does not change your rank on the list.`,
     ],
   },
@@ -42,7 +42,7 @@ const sections = [
     items: [
       "We remove rows that break these rules, without a refund, and we do not negotiate about it.",
       "We may change the minimum bid or the takeover formula. Rows already paid for are never repriced.",
-      "This is a leaderboard, not an endorsement. A high rank means somebody paid — it means nothing else.",
+      "This is a leaderboard, not an endorsement. A high rank means somebody paid, and nothing else.",
     ],
   },
 ];

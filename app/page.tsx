@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Board } from "@/components/Board";
-import { TakeoverCard } from "@/components/TakeoverCard";
 import {
   MIN_BID,
   activeTakeover,
@@ -17,11 +16,11 @@ export const dynamic = "force-dynamic";
 const faq = [
   {
     q: "What do I actually get?",
-    a: "A row on a public list, sorted by bid, linking straight to your X profile. Nothing else is promised — the followers are down to what you post.",
+    a: "A row on a public list, sorted by bid, linking straight to your X profile. Nothing else is promised. The followers are down to what you post.",
   },
   {
     q: "Someone pushed me down. Refund?",
-    a: "No. You bought a position at a price, not a lease on #1. Bid again to climb back — you only pay the gap.",
+    a: "No. You bought a position at a price, not a lease on #1. Bid again to climb back, and you only pay the gap.",
   },
   {
     q: "Can I bid on someone else's handle?",
@@ -57,9 +56,7 @@ export default async function Home() {
       <Board initial={initial} minBid={MIN_BID} />
 
       <div className="mx-auto w-full max-w-4xl px-4 pb-16">
-        <TakeoverCard price={initial.takeoverPrice} />
-
-        <h2 className="mt-12 mb-4 text-center text-2xl font-bold tracking-[-0.03em]">
+        <h2 className="mb-4 text-center text-2xl font-bold tracking-[-0.03em]">
           Questions people actually ask
         </h2>
         <div className="grid gap-3 sm:grid-cols-2">

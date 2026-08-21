@@ -20,7 +20,7 @@ function connect(): SupabaseClient {
 
 /**
  * Client serveur uniquement : la service_role key contourne RLS.
- * Initialisation paresseuse — sinon `next build` casse quand les variables
+ * Initialisation paresseuse, sinon `next build` casse quand les variables
  * d'environnement ne sont pas présentes à la compilation.
  * Ne jamais l'importer depuis un composant client.
  */

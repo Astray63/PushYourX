@@ -7,7 +7,7 @@ import { money } from "@/lib/format";
 import { stripe } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
-export const metadata = { title: "You're on the board — push your.x" };
+export const metadata = { title: "You're on the board · push your.x" };
 
 async function resolvePending(params: { p?: string; session_id?: string }) {
   if (params.p) return getPending(params.p);
@@ -47,17 +47,17 @@ export default async function SuccessPage({
             </h1>
             <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
               {money(row.amount)} is holding your place. It holds until somebody pays a dollar
-              more — and you will find out fast when they do.
+              more, and you will find out fast when they do.
             </p>
           </>
         ) : (
           <>
             <h1 className="text-[28px] font-bold tracking-[-0.03em]">Payment received.</h1>
             <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-              Your row is being written. Refresh the board in a few seconds — if it is still not
+              Your row is being written. Refresh the board in a few seconds. If it is still not
               there, the reference is{" "}
               <span className="font-semibold text-foreground">
-                {params.session_id ?? params.p ?? "—"}
+                {params.session_id ?? params.p ?? "n/a"}
               </span>
               .
             </p>

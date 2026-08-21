@@ -7,7 +7,7 @@ import { Footer } from "@/components/Footer";
 const sans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "push your.x — bid your way to the top of the timeline",
+  title: "push your.x · bid your way to the top of the timeline",
   description:
     "A public leaderboard of X accounts. No ads, no API keys, no revenue share. The highest bid sits at #1.",
   openGraph: {

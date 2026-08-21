@@ -5,7 +5,7 @@ export function Footer() {
     <footer className="w-full border-t border-border">
       <div className="mx-auto w-full max-w-4xl px-4 py-8 text-center text-sm text-muted-foreground">
         <p>
-          Rank is the bid — <span className="text-foreground">nothing else.</span>
+          Rank is the bid, <span className="text-foreground">nothing else.</span>
         </p>
         <nav className="mt-3 flex flex-wrap items-center justify-center gap-4">
           <Link href="/rules" className="transition-colors hover:text-primary">
@@ -15,7 +15,7 @@ export function Footer() {
             About
           </Link>
           <a
-            href="https://x.com"
+            href="https://x.com/shiptesapps"
             target="_blank"
             rel="noreferrer"
             className="transition-colors hover:text-primary"

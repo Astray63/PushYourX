@@ -95,8 +95,8 @@ export async function POST(req: Request) {
           unit_amount: Math.max(charge, 1) * 100,
           product_data: {
             name: isTakeover
-              ? `Takeover — @${parsed.display} above the whole board`
-              : `Rank #${rank} — @${parsed.display}`,
+              ? `Takeover: @${parsed.display} above the whole board`
+              : `Rank #${rank} for @${parsed.display}`,
             description: isTakeover
               ? `Your handle sits above #1 on every page for ${TAKEOVER_HOURS} hours, with a live countdown.`
               : existingBid
@@ -111,8 +111,8 @@ export async function POST(req: Request) {
     ],
     payment_intent_data: {
       description: isTakeover
-        ? `push your.x — takeover for @${parsed.display}`
-        : `push your.x — rank #${rank} for @${parsed.display} at ${pretty}`,
+        ? `push your.x · takeover for @${parsed.display}`
+        : `push your.x · rank #${rank} for @${parsed.display} at ${pretty}`,
     },
     custom_text: {
       submit: {

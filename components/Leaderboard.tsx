@@ -23,7 +23,7 @@ export function Leaderboard({
     <div className="scroll-mt-6 rounded-2xl bg-card px-3 py-1.5 shadow-board md:px-7 md:py-3">
       {entries.length === 0 ? (
         <p className="px-1 py-14 text-center text-sm text-muted-foreground">
-          The board is empty. Two dollars puts your handle at the top of nothing — for now.
+          The board is empty. Two dollars puts your handle at the top of nothing, for now.
         </p>
       ) : (
         <ol className="flex flex-col gap-2.5 py-2.5">
