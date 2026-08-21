@@ -2,17 +2,24 @@ export function money(n: number): string {
   return "$" + n.toLocaleString("en-US");
 }
 
-export function ago(ts: number): string {
+type AgoWords = {
+  seconds: (n: number) => string;
+  minutes: (n: number) => string;
+  hours: (n: number) => string;
+  days: (n: number) => string;
+  months: (n: number) => string;
+};
+
+export function ago(ts: number, w: AgoWords): string {
   const s = Math.max(1, Math.floor((Date.now() - ts) / 1000));
-  if (s < 60) return `${s}s ago`;
+  if (s < 60) return w.seconds(s);
   const m = Math.floor(s / 60);
-  if (m < 60) return `${m} minute${m > 1 ? "s" : ""} ago`;
+  if (m < 60) return w.minutes(m);
   const h = Math.floor(m / 60);
-  if (h < 24) return `${h} hour${h > 1 ? "s" : ""} ago`;
+  if (h < 24) return w.hours(h);
   const d = Math.floor(h / 24);
-  if (d < 30) return `${d} day${d > 1 ? "s" : ""} ago`;
-  const mo = Math.floor(d / 30);
-  return `${mo} month${mo > 1 ? "s" : ""} ago`;
+  if (d < 30) return w.days(d);
+  return w.months(Math.floor(d / 30));
 }
 
 export function countdown(ms: number): string {

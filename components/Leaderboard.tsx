@@ -3,6 +3,7 @@
 import { Avatar } from "./Avatar";
 import { ago, money } from "@/lib/format";
 import type { Entry } from "@/lib/types";
+import type { Dict } from "@/lib/i18n";
 
 /** Plus le rang est haut, plus la ligne est teintée. */
 function tone(rank: number) {
@@ -15,15 +16,17 @@ function tone(rank: number) {
 export function Leaderboard({
   entries,
   onClaim,
+  d,
 }: {
   entries: Entry[];
   onClaim: (amount: number) => void;
+  d: Dict;
 }) {
   return (
     <div className="scroll-mt-6 rounded-2xl bg-card px-3 py-1.5 shadow-board md:px-7 md:py-3">
       {entries.length === 0 ? (
         <p className="px-1 py-14 text-center text-sm text-muted-foreground">
-          The board is empty. Two dollars puts your handle at the top of nothing, for now.
+          {d.board.empty}
         </p>
       ) : (
         <ol className="flex flex-col gap-2.5 py-2.5">
@@ -101,15 +104,17 @@ export function Leaderboard({
                       </svg>
                     </span>
                     <p className="mt-1 line-clamp-2 text-sm leading-snug text-foreground">
-                      {e.post_text || "See the post"}
+                      {e.post_text || d.board.seePost}
                     </p>
                   </a>
                 )}
                 <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-xs">
-                  <span className="text-primary/80">{ago(e.updated_at)}</span>
+                  <span className="text-primary/80">{ago(e.updated_at, d.board.ago)}</span>
                   <span className="size-1 rounded-full bg-primary/50" />
                   <span className="font-semibold text-muted-foreground">
-                    {e.clicks.toLocaleString("en-US")} click{e.clicks === 1 ? "" : "s"}
+                    {e.clicks === 1
+                      ? d.cards.click(e.clicks.toLocaleString("en-US"))
+                      : d.cards.clicks(e.clicks.toLocaleString("en-US"))}
                   </span>
                 </p>
               </div>
@@ -122,7 +127,7 @@ export function Leaderboard({
                   onClick={() => onClaim(e.amount + 1)}
                   className="cursor-pointer text-[11px] whitespace-nowrap text-muted-foreground opacity-100 transition-all hover:text-primary focus-visible:opacity-100 sm:opacity-0 sm:group-hover:opacity-100"
                 >
-                  claim this rank for {money(e.amount + 1)}
+                  {d.board.claimRank(money(e.amount + 1))}
                 </button>
               </div>
             </li>

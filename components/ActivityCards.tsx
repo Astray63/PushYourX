@@ -3,6 +3,7 @@
 import { Avatar } from "./Avatar";
 import { ago, money } from "@/lib/format";
 import type { Activity, Trend } from "@/lib/types";
+import type { Dict } from "@/lib/i18n";
 
 function Card({ title, children }: { title: React.ReactNode; children: React.ReactNode }) {
   return (
@@ -22,9 +23,11 @@ function Empty({ children }: { children: React.ReactNode }) {
 export function ActivityCards({
   activity,
   trending,
+  d,
 }: {
   activity: Activity[];
   trending: Trend[];
+  d: Dict;
 }) {
   return (
     <div className="mb-6 grid grid-cols-1 items-stretch gap-4 md:grid-cols-2">
@@ -35,12 +38,12 @@ export function ActivityCards({
               <span className="ping absolute inline-flex size-full rounded-full bg-live opacity-75" />
               <span className="relative inline-flex size-1.5 rounded-full bg-live" />
             </span>
-            Latest activity
+            {d.cards.latest}
           </span>
         }
       >
         {activity.length === 0 ? (
-          <Empty>Nobody has entered the board yet.</Empty>
+          <Empty>{d.cards.noActivity}</Empty>
         ) : (
           <ul className="divide-y divide-border/60">
             {activity.map((a) => (
@@ -48,11 +51,11 @@ export function ActivityCards({
                 <Avatar handle={a.display_handle} size={20} />
                 <span className="truncate font-medium">@{a.display_handle}</span>
                 <span className="text-muted-foreground">
-                  {a.updated_at === a.created_at ? "joined at" : "raised to"}
+                  {a.updated_at === a.created_at ? d.cards.joinedAt : d.cards.raisedTo}
                 </span>
                 <span className="font-semibold text-primary tabular-nums">{money(a.amount)}</span>
                 <span className="ml-auto shrink-0 whitespace-nowrap text-muted-foreground">
-                  {ago(a.updated_at)}
+                  {ago(a.updated_at, d.board.ago)}
                 </span>
               </li>
             ))}
@@ -60,9 +63,9 @@ export function ActivityCards({
         )}
       </Card>
 
-      <Card title="🔥 Trending right now">
+      <Card title={d.cards.trending}>
         {trending.length === 0 ? (
-          <Empty>No clicks in the last hour yet.</Empty>
+          <Empty>{d.cards.noTrending}</Empty>
         ) : (
           <ul className="divide-y divide-border/60">
             {trending.map((t) => (
@@ -77,7 +80,9 @@ export function ActivityCards({
                   @{t.display_handle}
                 </a>
                 <span className="ml-auto shrink-0 font-semibold tabular-nums text-muted-foreground">
-                  {t.hits.toLocaleString("en-US")} click{t.hits === 1 ? "" : "s"}
+                  {t.hits === 1
+                    ? d.cards.click(t.hits.toLocaleString("en-US"))
+                    : d.cards.clicks(t.hits.toLocaleString("en-US"))}
                 </span>
               </li>
             ))}

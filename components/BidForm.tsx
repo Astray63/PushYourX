@@ -3,15 +3,17 @@
 import { useMemo, useState } from "react";
 import { Avatar } from "./Avatar";
 import { money } from "@/lib/format";
+import type { Dict } from "@/lib/i18n";
 
 type Props = {
   nextBid: number;
   minBid: number;
   entries: { handle: string; amount: number }[];
   onDone: () => void;
+  d: Dict;
 };
 
-export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
+export function BidForm({ nextBid, minBid, entries, onDone, d }: Props) {
   const [handle, setHandle] = useState("");
   const [post, setPost] = useState("");
   const [amount, setAmount] = useState(nextBid);
@@ -39,11 +41,11 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
         body: JSON.stringify({ handle, post, amount, kind: "bid" }),
       });
       const data = await res.json();
-      if (!res.ok) return setError(data.error ?? "Something went wrong.");
+      if (!res.ok) return setError(data.error ?? d.form.genericError);
       if (data.demo) onDone();
       window.location.href = data.url;
     } catch {
-      setError("Network error, try again.");
+      setError(d.form.networkError);
     } finally {
       setBusy(false);
     }
@@ -52,19 +54,19 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
   return (
     <section className="scroll-mt-6">
       <h2 className="flex flex-wrap items-center justify-center gap-x-2 text-center text-[28px] font-bold tracking-[-0.03em] text-pretty md:text-[40px]">
-        <span>Claim #{rank} for</span>
+        <span>{d.form.claim(rank)}</span>
         <span className="inline-flex items-center gap-2">
           <button
             type="button"
             onClick={() => bump(-1)}
-            aria-label="Lower the bid"
+            aria-label={d.form.lower}
             className="inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary-soft text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-primary-fg"
           >
             −
           </button>
 
           <label className="relative inline-block text-primary underline decoration-2 decoration-dashed underline-offset-[6px]">
-            <span className="sr-only">Amount in dollars</span>
+            <span className="sr-only">{d.form.amountLabel}</span>
             <span className="invisible whitespace-nowrap tabular-nums">${amount}</span>
             <span className="absolute inset-0 flex items-baseline">
               <span>$</span>
@@ -83,7 +85,7 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
           <button
             type="button"
             onClick={() => bump(1)}
-            aria-label="Raise the bid"
+            aria-label={d.form.raise}
             className="inline-flex size-6 shrink-0 cursor-pointer items-center justify-center rounded-full bg-primary-soft text-sm font-bold text-primary transition-colors hover:bg-primary hover:text-primary-fg"
           >
             +
@@ -92,8 +94,7 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
       </h2>
 
       <p className="mx-auto mt-2 max-w-md text-center text-sm leading-relaxed text-muted-foreground text-pretty">
-        Whatever you pay is where you land. Go below the top price and you are still on the
-        board, just further down the page.
+        {d.form.explain}
       </p>
 
       <form onSubmit={submit} className="mt-4 flex flex-col gap-3">
@@ -113,7 +114,7 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
             <input
               value={handle}
               onChange={(e) => setHandle(e.target.value)}
-              placeholder="Your X profile or @handle"
+              placeholder={d.form.handlePlaceholder}
               autoComplete="off"
               spellCheck={false}
               className="w-full min-w-0 rounded-full border border-input bg-card py-3.5 pr-4 pl-12 text-[15px] transition-colors outline-none placeholder:text-muted-foreground focus:border-primary-ring focus:ring-4 focus:ring-primary/10"
@@ -125,7 +126,7 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
             disabled={busy}
             className="inline-flex cursor-pointer items-center justify-center rounded-full bg-primary px-7 py-3.5 text-[15px] font-bold whitespace-nowrap text-primary-fg transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {busy ? "One second…" : "Push"}
+            {busy ? d.form.submitting : d.form.submit}
           </button>
         </div>
 
@@ -148,7 +149,7 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
           <input
             value={post}
             onChange={(e) => setPost(e.target.value)}
-            placeholder="Feature one of your posts (optional)"
+            placeholder={d.form.postPlaceholder}
             autoComplete="off"
             spellCheck={false}
             className="w-full min-w-0 rounded-full border border-input bg-card py-3 pr-4 pl-11 text-sm transition-colors outline-none placeholder:text-muted-foreground focus:border-primary-ring focus:ring-4 focus:ring-primary/10"
@@ -157,16 +158,25 @@ export function BidForm({ nextBid, minBid, entries, onDone }: Props) {
 
         <p className="text-center text-xs leading-relaxed text-muted-foreground text-pretty">
           {existing ? (
-            <>
-              <span className="font-semibold text-primary">@{cleanHandle}</span> is already on the
-              board at {money(existing.amount)}, so you only pay the difference,{" "}
-              <span className="font-semibold text-foreground">{money(owed)}</span>.
-            </>
+            (() => {
+              const p = d.form.alreadyOn(
+                `@${cleanHandle}`,
+                money(existing.amount),
+                money(owed)
+              );
+              return (
+                <>
+                  <span className="font-semibold text-primary">{p.handle}</span>
+                  {p.before}
+                  {p.amount}
+                  {p.middle}
+                  <span className="font-semibold text-foreground">{p.owed}</span>
+                  {p.after}
+                </>
+              );
+            })()
           ) : (
-            <>
-              Paste a post link and your row shows it off, so the board sells your launch and not
-              just your handle.
-            </>
+            <>{d.form.postHint}</>
           )}
         </p>
 

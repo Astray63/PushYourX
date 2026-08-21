@@ -2,8 +2,15 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import type { Dict } from "@/lib/i18n";
 
-export function LiveStats({ initialVisitors = 0 }: { initialVisitors?: number }) {
+export function LiveStats({
+  initialVisitors = 0,
+  d,
+}: {
+  initialVisitors?: number;
+  d: Dict;
+}) {
   const [s, setS] = useState({ online: 1, visitors: initialVisitors });
 
   useEffect(() => {
@@ -32,11 +39,11 @@ export function LiveStats({ initialVisitors = 0 }: { initialVisitors?: number })
           <span className="relative inline-flex size-2 rounded-full bg-live" />
         </span>
         <span className="font-semibold text-live">
-          {s.online.toLocaleString("en-US")} online
+          {d.stats.online(s.online.toLocaleString("en-US"))}
         </span>
       </span>
-      <span> · {s.visitors.toLocaleString("en-US")} visitors since launch</span>
-      <span className="text-foreground"> · see stats→</span>
+      <span> · {d.stats.visitors(s.visitors.toLocaleString("en-US"))}</span>
+      <span className="text-foreground"> · {d.stats.seeStats}→</span>
     </Link>
   );
 }

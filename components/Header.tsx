@@ -4,15 +4,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ThemeToggle } from "./ThemeToggle";
+import { LangSwitch } from "./LangSwitch";
+import type { Dict, Lang } from "@/lib/i18n";
 
-const nav = [
-  { href: "/", label: "Leaderboard" },
-  { href: "/about", label: "About" },
-  { href: "/rules", label: "Rules" },
-];
-
-export function Header() {
+export function Header({ lang, d }: { lang: Lang; d: Dict }) {
   const path = usePathname();
+
+  const nav = [
+    { href: "/", label: d.nav.leaderboard },
+    { href: "/about", label: d.nav.about },
+    { href: "/rules", label: d.nav.rules },
+  ];
 
   return (
     <header className="sticky top-0 z-50 px-3 pt-3 pb-2 sm:px-4 sm:pt-4">
@@ -37,7 +39,8 @@ export function Header() {
           </Link>
 
           {/* Actions compactes, mobile uniquement */}
-          <div className="flex items-center gap-1 lg:hidden">
+          <div className="flex items-center gap-1.5 lg:hidden">
+            <LangSwitch lang={lang} label={d.langLabel} />
             <ThemeToggle />
           </div>
         </div>
@@ -62,12 +65,13 @@ export function Header() {
 
         {/* Actions desktop */}
         <div className="hidden items-center justify-end gap-2 lg:flex">
+          <LangSwitch lang={lang} label={d.langLabel} />
           <ThemeToggle />
           <Link
             href="/#bid"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-xs font-bold tracking-[0.08em] whitespace-nowrap text-primary-fg uppercase transition-opacity hover:opacity-90"
           >
-            Push my X
+            {d.nav.cta}
             <svg
               viewBox="0 0 24 24"
               className="size-3.5"

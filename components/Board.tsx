@@ -7,8 +7,17 @@ import { Leaderboard } from "./Leaderboard";
 import { LiveStats } from "./LiveStats";
 import { TakeoverBanner } from "./TakeoverBanner";
 import type { BoardData } from "@/lib/types";
+import type { Dict } from "@/lib/i18n";
 
-export function Board({ initial, minBid }: { initial: BoardData; minBid: number }) {
+export function Board({
+  initial,
+  minBid,
+  d,
+}: {
+  initial: BoardData;
+  minBid: number;
+  d: Dict;
+}) {
   const [data, setData] = useState(initial);
   const [page, setPage] = useState(initial.page);
   const [refreshing, setRefreshing] = useState(false);
@@ -48,14 +57,11 @@ export function Board({ initial, minBid }: { initial: BoardData; minBid: number 
         <header className="mb-6 text-center">
           <h1 className="sr-only">Push Your X</h1>
 
-          <LiveStats initialVisitors={data.stats.visitors} />
+          <LiveStats initialVisitors={data.stats.visitors} d={d} />
 
           <p className="mx-auto mt-8 max-w-2xl text-lg leading-relaxed text-balance text-muted-foreground [text-wrap:pretty]">
-            No algorithm, no engagement pods, no follow-for-follow. One list of X accounts,
-            ordered by the only number that cannot be faked.{" "}
-            <span className="font-semibold text-primary">
-              How much is #1 worth to you?
-            </span>
+            {d.hero.lead}{" "}
+            <span className="font-semibold text-primary">{d.hero.kicker}</span>
           </p>
         </header>
 
@@ -67,11 +73,12 @@ export function Board({ initial, minBid }: { initial: BoardData; minBid: number 
               minBid={minBid}
               entries={data.entries.map((e) => ({ handle: e.handle, amount: e.amount }))}
               onDone={() => load(1)}
+              d={d}
             />
           </div>
 
           <div>
-            <ActivityCards activity={data.activity} trending={data.trending} />
+            <ActivityCards activity={data.activity} trending={data.trending} d={d} />
 
             <div className="mb-2 flex items-center justify-end">
               <button
@@ -91,11 +98,11 @@ export function Board({ initial, minBid }: { initial: BoardData; minBid: number 
                 >
                   <path d="M20 11a8 8 0 1 0-.6 4M20 5v6h-6" />
                 </svg>
-                Refresh
+                {d.board.refresh}
               </button>
             </div>
 
-            <Leaderboard entries={data.entries} onClaim={claim} />
+            <Leaderboard entries={data.entries} onClaim={claim} d={d} />
 
             {data.pages > 1 && (
               <nav className="mt-5 flex items-center justify-center gap-1.5">

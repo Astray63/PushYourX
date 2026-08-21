@@ -5,6 +5,7 @@ import { fulfill } from "@/app/api/webhook/route";
 import { findByHandle, rankForAmount } from "@/lib/board";
 import { money } from "@/lib/format";
 import { stripe } from "@/lib/stripe";
+import { getDict } from "@/lib/lang";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "You're on the board" };
@@ -27,6 +28,7 @@ export default async function SuccessPage({
   searchParams: Promise<{ p?: string; session_id?: string }>;
 }) {
   const params = await searchParams;
+  const { d } = await getDict();
   const pending = await resolvePending(params);
   const row = pending ? await findByHandle(pending.handle) : undefined;
   const rank = row ? await rankForAmount(row.amount, "") : 0;
@@ -40,22 +42,20 @@ export default async function SuccessPage({
               <Avatar handle={row.display_handle} size={64} />
             </div>
             <p className="text-sm font-bold tracking-wider text-primary uppercase">
-              {pending?.kind === "takeover" ? "Takeover live" : `Rank #${rank}`}
+              {d.success.rank(rank)}
             </p>
             <h1 className="mt-2 text-[28px] font-bold tracking-[-0.03em]">
-              @{row.display_handle} is on the board.
+              {d.success.onBoard(row.display_handle)}
             </h1>
             <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-              {money(row.amount)} is holding your place. It holds until somebody pays a dollar
-              more, and you will find out fast when they do.
+              {d.success.holding(money(row.amount))}
             </p>
           </>
         ) : (
           <>
-            <h1 className="text-[28px] font-bold tracking-[-0.03em]">Payment received.</h1>
+            <h1 className="text-[28px] font-bold tracking-[-0.03em]">{d.success.received}</h1>
             <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-              Your row is being written. Refresh the board in a few seconds. If it is still not
-              there, the reference is{" "}
+              {d.success.writing}{" "}
               <span className="font-semibold text-foreground">
                 {params.session_id ?? params.p ?? "n/a"}
               </span>
@@ -69,18 +69,18 @@ export default async function SuccessPage({
             href="/"
             className="cursor-pointer rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-fg transition-opacity hover:opacity-90"
           >
-            See the board
+            {d.success.seeBoard}
           </Link>
           {row && (
             <a
               href={`https://x.com/intent/post?text=${encodeURIComponent(
-                `I'm #${rank} on push your.x. Come take it from me.`
+                d.success.dareText(rank)
               )}`}
               target="_blank"
               rel="noreferrer"
               className="cursor-pointer rounded-full bg-muted px-6 py-3 text-sm font-bold text-muted-foreground transition-colors hover:text-foreground"
             >
-              Dare them on X
+              {d.success.dare}
             </a>
           )}
         </div>

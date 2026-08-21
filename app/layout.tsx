@@ -3,6 +3,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
+import { getDict } from "@/lib/lang";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
@@ -43,18 +44,20 @@ export const metadata: Metadata = {
 /** Le site s'ouvre en clair. Le sombre ne s'applique que si le visiteur l'a choisi. */
 const themeScript = `try{if(localStorage.getItem("pyx-theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}`;
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const { lang, d } = await getDict();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={lang} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
       </head>
       <body className={`${sans.variable} min-h-full font-sans antialiased`}>
         <div className="aurora" />
         <div className="flex min-h-dvh flex-col">
-          <Header />
+          <Header lang={lang} d={d} />
           <main className="flex flex-1 flex-col">{children}</main>
-          <Footer />
+          <Footer d={d} />
         </div>
         <Analytics />
         <SpeedInsights />
