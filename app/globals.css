@@ -1,26 +1,106 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Crème chaud + cartes blanches : la profondeur vient du contraste des deux. */
+  --color-background:       #faf6ef;
+  --color-foreground:       #2a2620;
+  --color-card:             #fffdf9;
+  --color-muted:            #f2ece1;
+  --color-muted-foreground: #6d6558;
+  --color-border:           #e9e1d3;
+  --color-input:            #e2d9c9;
+
+  --color-primary:          #7c3aed;
+  --color-primary-fg:       #ffffff;
+  --color-primary-soft:     #f0e8fd;
+  --color-primary-soft-2:   #f8f4fd;
+  --color-primary-ring:     #c4a6fb;
+
+  --color-live:             #17914a;
+  --color-destructive:      #cc2222;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+}
+
+/* ---- Dark : la palette de l'avatar, violet néon sur noir ---- */
+.dark {
+  --color-background:       #0d0916;
+  --color-foreground:       #ede9fb;
+  --color-card:             #14102080;
+  --color-muted:            #1b1530;
+  --color-muted-foreground: #9c90bd;
+  --color-border:           #2a2145;
+  --color-input:            #2a2145;
+
+  --color-primary:          #a855f7;
+  --color-primary-fg:       #14071f;
+  --color-primary-soft:     #241a3d;
+  --color-primary-soft-2:   #171128;
+  --color-primary-ring:     #7c3aed;
+
+  --color-live:             #34d399;
+
+  --shadow-board: 0 1px 2px rgba(0, 0, 0, 0.3), 0 12px 40px rgba(0, 0, 0, 0.45);
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  /* Ombre chaude et diffuse plutôt que grise : c'est ce qui fait le rendu premium.
+     Hors @theme, sinon Tailwind inline la valeur et .dark ne peut plus la surcharger. */
+  --shadow-board: 0 1px 2px rgba(74, 58, 33, 0.04), 0 12px 40px rgba(74, 58, 33, 0.07);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@utility shadow-board {
+  box-shadow: var(--shadow-board);
 }
+.dark { color-scheme: dark; }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Halo violet très discret derrière le haut de page */
+.aurora {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(48rem 28rem at 50% -8rem, color-mix(in srgb, var(--color-primary) 9%, transparent), transparent 72%),
+    radial-gradient(38rem 22rem at 88% 8%, rgba(233, 200, 143, 0.16), transparent 70%);
+}
+
+@keyframes ping-soft {
+  0%   { transform: scale(1);   opacity: .75; }
+  75%, 100% { transform: scale(2); opacity: 0; }
+}
+.ping { animation: ping-soft 1.6s cubic-bezier(0, 0, .2, 1) infinite; }
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.rise { animation: rise .4s cubic-bezier(.2,.7,.3,1) both; }
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+input[type="number"] { -moz-appearance: textfield; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 99px;
+  border: 3px solid var(--color-background);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ping, .rise { animation: none; }
 }
