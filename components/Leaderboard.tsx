@@ -78,7 +78,7 @@ export function Leaderboard({
                 )}
                 {e.post_url && (
                   <a
-                    href={e.post_url}
+                    href={`/api/click/${e.id}?to=post`}
                     target="_blank"
                     rel="noreferrer"
                     className="mt-1.5 block rounded-xl border border-border bg-card px-3 py-2 transition-colors hover:border-primary-ring"
