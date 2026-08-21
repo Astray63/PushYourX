@@ -19,7 +19,8 @@ export const metadata: Metadata = {
 };
 
 /** Applique le thème avant le premier paint pour éviter le flash. */
-const themeScript = `try{var t=localStorage.getItem("pyx-theme");var d=t?t==="dark":matchMedia("(prefers-color-scheme: dark)").matches;if(d)document.documentElement.classList.add("dark")}catch(e){}`;
+/** Le site s'ouvre en clair. Le sombre ne s'applique que si le visiteur l'a choisi. */
+const themeScript = `try{if(localStorage.getItem("pyx-theme")==="dark")document.documentElement.classList.add("dark")}catch(e){}`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (

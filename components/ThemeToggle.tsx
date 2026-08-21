@@ -6,8 +6,8 @@ export function ThemeToggle() {
   const [dark, setDark] = useState(false);
 
   useEffect(() => {
-    const stored = localStorage.getItem("pyx-theme");
-    const on = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    // Clair par défaut : on ne passe en sombre que sur un choix explicite.
+    const on = localStorage.getItem("pyx-theme") === "dark";
     setDark(on);
     document.documentElement.classList.toggle("dark", on);
   }, []);

@@ -35,13 +35,8 @@ npm run dev
 ```
 
 Sans `STRIPE_SECRET_KEY`, le site tourne en **mode démo** : la mise est validée sans paiement.
-Parfait pour développer.
-
-Pour peupler le board avec des handles fictifs :
-
-```bash
-node --env-file=.env scripts/seed.mjs --reset
-```
+Pratique pour développer — mais dès qu'une clé Stripe est présente, le mode démo se coupe tout
+seul et plus rien ne peut entrer sur le board sans paiement.
 
 ## Variables d'environnement
 
@@ -67,7 +62,8 @@ pas encaisser deux fois.
 
 ## Base de données
 
-Postgres sur Supabase. Le schéma vit dans `supabase/migrations/` :
+Postgres sur Supabase. **La base de production ne contient aucune donnée de test** — pas de
+seed, pas de fixtures. Le board se remplit uniquement de mises réellement payées. Le schéma vit dans `supabase/migrations/` :
 
 - `0001_init.sql` — tables `bids`, `pending`, `takeover`, `clicks`, `visits`
 - `0002_functions.sql` — les opérations qui doivent être atomiques (`settle_bid`, `track_click`)
