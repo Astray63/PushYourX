@@ -1,5 +1,5 @@
 import { ms, supabase } from "./supabase";
-import { cleanTagline } from "./x";
+import { cleanTagline, fetchPostPreview } from "./x";
 import type { Activity, Entry, Stats, Takeover, Trend } from "./types";
 
 export const MIN_BID = 2;
@@ -11,6 +11,8 @@ type BidRow = {
   display_handle: string;
   tagline: string;
   post_url: string;
+  post_text: string;
+  post_author: string;
   amount: number;
   clicks: number;
   created_at: string;
@@ -23,6 +25,8 @@ const toEntry = (r: BidRow, rank: number): Entry => ({
   display_handle: r.display_handle,
   tagline: r.tagline,
   post_url: r.post_url ?? "",
+  post_text: r.post_text ?? "",
+  post_author: r.post_author ?? "",
   amount: r.amount,
   clicks: r.clicks,
   created_at: ms(r.created_at),
@@ -115,12 +119,17 @@ export async function settleBid(
   amount: number,
   postUrl = ""
 ) {
+  // L'aperçu du post est résolu ici, une seule fois, pas à chaque affichage.
+  const preview = postUrl ? await fetchPostPreview(postUrl) : { text: "", author: "" };
+
   const { data, error } = await supabase.rpc("settle_bid", {
     p_handle: handle,
     p_display: display,
     p_tagline: cleanTagline(tagline),
     p_amount: amount,
     p_post_url: postUrl,
+    p_post_text: preview.text,
+    p_post_author: preview.author,
   });
   if (error) throw error;
   return data as BidRow;

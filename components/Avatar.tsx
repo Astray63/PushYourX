@@ -28,7 +28,7 @@ export function Avatar({
       ) : (
         // eslint-disable-next-line @next/next/no-img-element
         <img
-          src={`https://unavatar.io/x/${handle}?fallback=false`}
+          src={`/api/avatar/${handle}`}
           alt=""
           width={size}
           height={size}

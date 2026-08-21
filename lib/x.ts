@@ -89,3 +89,47 @@ export function parsePostUrl(raw: string): PostResult {
   const [, author, id] = m;
   return { ok: true, url: `https://x.com/${author}/status/${id}`, author, id };
 }
+
+export type PostPreview = { text: string; author: string };
+
+/**
+ * Récupère le texte d'un post via l'oEmbed public de X (aucune clé requise).
+ * Appelé une seule fois, quand la mise est encaissée : l'affichage lit la base.
+ * En cas d'échec on renvoie du vide, la ligne retombe alors sur le simple lien.
+ */
+export async function fetchPostPreview(postUrl: string): Promise<PostPreview> {
+  const empty = { text: "", author: "" };
+  try {
+    const api = `https://publish.twitter.com/oembed?omit_script=1&dnt=true&url=${encodeURIComponent(
+      postUrl
+    )}`;
+    const res = await fetch(api, {
+      redirect: "follow",
+      signal: AbortSignal.timeout(6000),
+      headers: { accept: "application/json" },
+    });
+    if (!res.ok) return empty;
+
+    const data = (await res.json()) as { html?: string; author_name?: string };
+    if (!data.html) return empty;
+
+    // L'oEmbed renvoie un <blockquote> : on ne garde que le paragraphe du post.
+    const p = data.html.match(/<p[^>]*>([\s\S]*?)<\/p>/i)?.[1] ?? "";
+    const text = p
+      .replace(/<br\s*\/?>/gi, " ")
+      .replace(/<[^>]+>/g, "")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'")
+      .replace(/&mdash;/g, "-")
+      .replace(/\s+/g, " ")
+      .trim()
+      .slice(0, 240);
+
+    return { text, author: (data.author_name ?? "").slice(0, 60) };
+  } catch {
+    return empty;
+  }
+}

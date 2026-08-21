@@ -4,6 +4,8 @@ export type Entry = {
   display_handle: string;
   tagline: string;
   post_url: string;
+  post_text: string;
+  post_author: string;
   amount: number;
   clicks: number;
   created_at: number;

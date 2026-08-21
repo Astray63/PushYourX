@@ -78,24 +78,31 @@ export function Leaderboard({
                     href={e.post_url}
                     target="_blank"
                     rel="noreferrer"
-                    className="mt-1 inline-flex max-w-full items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-xs font-medium transition-colors hover:border-primary-ring hover:text-primary"
+                    className="mt-1.5 block rounded-xl border border-border bg-card px-3 py-2 transition-colors hover:border-primary-ring"
                   >
-                    <svg viewBox="0 0 24 24" className="size-3 shrink-0" fill="currentColor" aria-hidden>
-                      <path d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.65l-5.22-6.82-5.96 6.82H1.68l7.73-8.84L1.26 2.25h6.82l4.71 6.23 5.45-6.23Zm-1.16 17.52h1.83L7.08 4.13H5.11l11.97 15.64Z" />
-                    </svg>
-                    <span className="truncate">Featured post</span>
-                    <svg
-                      viewBox="0 0 24 24"
-                      className="size-2.5 shrink-0 opacity-50"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="3"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      aria-hidden
-                    >
-                      <path d="M7 17 17 7M9 7h8v8" />
-                    </svg>
+                    <span className="flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground">
+                      <svg viewBox="0 0 24 24" className="size-3 shrink-0" fill="currentColor" aria-hidden>
+                        <path d="M18.24 2.25h3.31l-7.23 8.26 8.5 11.24h-6.65l-5.22-6.82-5.96 6.82H1.68l7.73-8.84L1.26 2.25h6.82l4.71 6.23 5.45-6.23Zm-1.16 17.52h1.83L7.08 4.13H5.11l11.97 15.64Z" />
+                      </svg>
+                      <span className="truncate">
+                        {e.post_author || `@${e.display_handle}`}
+                      </span>
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="ml-auto size-2.5 shrink-0 opacity-50"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        aria-hidden
+                      >
+                        <path d="M7 17 17 7M9 7h8v8" />
+                      </svg>
+                    </span>
+                    <p className="mt-1 line-clamp-2 text-sm leading-snug text-foreground">
+                      {e.post_text || "See the post"}
+                    </p>
                   </a>
                 )}
                 <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-xs">
